@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { username, email, password, avatar} = req.body;
+    const { formState: {username, email, password} , avatar} = req.body;
 
     const emailExists = await User.findOne({ email });
     if (emailExists) {
