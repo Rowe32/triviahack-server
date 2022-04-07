@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { formState: {username, email, password} , avatar} = req.body;
+    const { user: {username, email, password} , avatar} = req.body;
 
     const emailExists = await User.findOne({ email });
     if (emailExists) {
@@ -50,12 +50,11 @@ router.post("/signup", async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const uploadResponse = await storage.cloudinary.uploader.upload(avatar);
+    const uploadResponse = await storage.cloudinary.uploader.upload(avatar, {upload_preset: 'triviahack_setup'});
 
     await User.create({ username, email, password: passwordHash, avatar: uploadResponse.public_id, friends: [], score: 0 });
 
     return res.json({ message: "Successfully signed up!" });
-
   } catch (error) {
     console.log(error);
     return res.status(400).json({ errorMessage: "Something went wrong!" });
