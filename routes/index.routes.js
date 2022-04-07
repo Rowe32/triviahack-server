@@ -12,5 +12,6 @@ router.get("/getCsrfToken", csrfMiddleware, (req, res, next) => {
 // You put the next routes here 👇
 router.use(require("./auth.routes"));
 router.use(require("./user.routes"));
+router.use(require("./quiz.routes"));
 
 module.exports = router;
