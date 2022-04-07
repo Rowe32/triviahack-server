@@ -52,7 +52,7 @@ router.post("/signup", async (req, res) => {
 
     const uploadResponse = await storage.cloudinary.uploader.upload(avatar, {upload_preset: 'triviahack_setup'});
 
-    await User.create({ username, email, password: passwordHash, avatar: uploadResponse.public_id, friends: [], score: 0 });
+    await User.create({ username, email, password: passwordHash, avatar: uploadResponse.url, friends: [], score: 0 });
 
     return res.json({ message: "Successfully signed up!" });
   } catch (error) {
