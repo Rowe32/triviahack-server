@@ -118,11 +118,11 @@ router.get("/own-friends-quizzes", isLoggedIn, csrfMiddleware, async (req, res) 
 
 router.get("/questions", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
-    const { questionId, category, difficulty } = req.body;
+    const { quizId, category, difficulty } = req.body;
 
-    if (questionId > 0) {
-      questionId = mongoose.Types.ObjectId(questionId);
-      const questions = await Question.find({quiz: questionId});
+    if (quizId > 0) {
+      quizId = mongoose.Types.ObjectId(quizId);
+      const questions = await Question.find({quiz: quizId});
 
       return res.json({ questions });
     } else {
