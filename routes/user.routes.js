@@ -52,12 +52,11 @@ router.put("/user/add-friend", isLoggedIn, csrfMiddleware, async (req, res) => {
   }
 });
 
-router.delete("/user/delete-friend", isLoggedIn, csrfMiddleware, async (req, res) => {
+router.put("/user/delete-friend", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
     const { username } = req.body;
     const userFriend = await User.findOne({ username });
-
-    await User.findByIdAndDelete(req.session.user._id, { $pull: { friends: userFriend._id } });
+    await User.findByIdAndUpdate(req.session.user._id, { $pull: { friends: userFriend._id } });
 
     return res.json({ message: "Successfully deleted!" });
   } catch (error) {
