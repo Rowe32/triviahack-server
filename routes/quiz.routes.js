@@ -7,6 +7,17 @@ const Question = require("../models/Question.model");
 const User = require("../models/User.model");
 const { default: mongoose } = require("mongoose");
 
+router.get("/quiz/list", isLoggedIn, csrfMiddleware, async (req, res) => {
+  try {
+    const quizzes = await Quiz.find({owner: req.session.user._id});
+
+    return res.json({ quizzes });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errorMessage: "Something went wrong!" });  
+  }
+});
+
 router.post("/quiz/create", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
     const { quiz, questions } = req.body;
