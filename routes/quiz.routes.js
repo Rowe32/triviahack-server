@@ -1,9 +1,11 @@
 const router = require("express").Router();
 const csrfMiddleware = require("../middlewares/csrfMiddleware");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const axios = require("axios");
 const Quiz = require("../models/Quiz.model");
 const Question = require("../models/Question.model");
-const axios = require("axios");
+const User = require("../models/User.model");
+const { default: mongoose } = require("mongoose");
 
 router.post("/quiz/create", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
@@ -81,6 +83,45 @@ router.get("/categories", isLoggedIn, csrfMiddleware, async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({ errorMessage: "Something went wrong!" });      
+  }
+});
+
+router.get("/own-friends-quizzes", isLoggedIn, csrfMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user._id);
+    await user.populate("friends");
+
+    let idsFilter = [user._id];
+    user.friends.forEach((friend) => {
+      idsFilter.push(friend._id);
+    });
+
+    const quizzes = await Quiz.find({owner: idsFilter});
+
+    return res.json({ quizzes });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errorMessage: "Something went wrong!" });  
+  }
+});
+
+router.get("/questions", isLoggedIn, csrfMiddleware, async (req, res) => {
+  try {
+    const { questionId, category, difficulty } = req.body;
+
+    if (questionId > 0) {
+      questionId = mongoose.Types.ObjectId(questionId);
+      const questions = await Question.find({quiz: questionId});
+
+      return res.json({ questions });
+    } else {
+      const response = await axios.get(`https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`);
+
+      return res.json({ questions: response.data.results });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errorMessage: "Something went wrong!" });
   }
 });
 
