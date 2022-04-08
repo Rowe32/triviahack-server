@@ -70,14 +70,14 @@ router.put("/quiz/edit", isLoggedIn, csrfMiddleware, async (req, res) => {
 
 router.delete("/quiz/delete", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
-    const { quiz } = req.body;
-
-    const questions = await Question.find({ quiz: quiz._id });
+    /* we transform string_id to Object_id for mongoose search */
+    const quizId = mongoose.Types.ObjectId(req.query.quizId);
+    const questions = await Question.find({ quiz: quizId });
     questions.forEach(async(question) => {
       await Question.findByIdAndDelete(question._id);
     });
 
-    await Quiz.findByIdAndDelete(quiz._id);
+    await Quiz.findByIdAndDelete(quizId);
 
     return res.json({ message: "Successfully deleted!" });
   } catch (error) {
