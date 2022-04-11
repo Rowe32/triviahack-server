@@ -118,12 +118,13 @@ router.get("/own-friends-quizzes", isLoggedIn, csrfMiddleware, async (req, res) 
 
 router.get("/questions", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
-    const { quizId, category, difficulty } = req.query;
-
-    if (quizId > 0) {
+    console.log(req.query)
+    let { quizId, category, difficulty } = req.query;
+    console.log(quizId)
+    if (quizId !== "") {
       quizId = mongoose.Types.ObjectId(quizId);
       const questions = await Question.find({quiz: quizId});
-
+      console.log(questions)
       return res.json({ questions });
     } else {
       const response = await axios.get(`https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`);
