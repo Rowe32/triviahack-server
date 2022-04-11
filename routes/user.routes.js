@@ -65,4 +65,18 @@ router.put("/user/delete-friend", isLoggedIn, csrfMiddleware, async (req, res) =
   }
 });
 
+router.put("/user/update-score", isLoggedIn, csrfMiddleware, async (req, res) => {
+  try {
+    const { score } = req.body;
+    const user = await User.findById(req.session.user._id);
+    user.score = user.score + score;
+    await user.save();
+
+    return res.json({ message: "Successfully updated!" });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errorMessage: "Something went wrong!" });
+  }
+});
+
 module.exports = router;
