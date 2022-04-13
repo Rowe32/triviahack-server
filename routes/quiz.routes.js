@@ -47,7 +47,7 @@ router.post("/quiz/create", isLoggedIn, csrfMiddleware, async (req, res) => {
 router.put("/quiz/edit", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
     const { quiz, questions } = req.body;
-
+    console.log(quiz, questions)
     const editQuiz = await Quiz.findByIdAndUpdate(quiz._id, {
       name: quiz.name,
       difficulty: quiz.difficulty  
