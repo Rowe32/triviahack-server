@@ -17,7 +17,6 @@ router.get("/user", isLoggedIn, csrfMiddleware, async (req, res) => {
   }
 });
 
-
 router.put("/user/edit", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
     const { avatar } = req.body;

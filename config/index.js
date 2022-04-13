@@ -2,6 +2,7 @@
 const express = require("express");
 const session = require("express-session");
 const helmet = require("helmet");
+const MongoStore = require('connect-mongo');
 
 // ℹ️ Responsible for the messages you see in the terminal as requests are coming in
 // https://www.npmjs.com/package/morgan
@@ -24,6 +25,7 @@ module.exports = (app) => {
   app.use(
     session({
       secret: process.env.SESS_SECRET,
+      store: MongoStore.create({mongoUrl: process.env.MONGODB_URI || "mongodb://localhost/triviahack"}),
       resave: true,
       saveUninitialized: false,
       cookie: {
