@@ -89,8 +89,10 @@ router.delete("/quiz/delete", isLoggedIn, csrfMiddleware, async (req, res) => {
 router.get("/categories", isLoggedIn, csrfMiddleware, async (req, res) => {
   try {
     const response = await axios.get('https://opentdb.com/api_category.php');
+    const categoriesToFilter = [13, 25, 26, 30,]; //This categories don't have 10 questions
+    const categories = response.data.trivia_categories.filter((category => !categoriesToFilter.includes(category.id)));
 
-    return res.json({ categories: response.data.trivia_categories });
+    return res.json({ categories });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ errorMessage: "Something went wrong!" });      
