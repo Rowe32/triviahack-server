@@ -68,4 +68,13 @@ router.post("/logout", async (req, res, next) => {
   });
 });
 
+router.get("/logged", async (req, res) => {
+  try {
+    return res.json({user: req.session.user});
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errorMessage: "Something went wrong!" });
+  }
+});
+
 module.exports = router;
