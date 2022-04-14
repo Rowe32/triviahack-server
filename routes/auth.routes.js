@@ -50,9 +50,12 @@ router.post("/signup", async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const uploadResponse = await storage.cloudinary.uploader.upload(avatar, {upload_preset: 'triviahack_setup'});
-
-    await User.create({ username, email, password: passwordHash, avatar: uploadResponse.url, friends: [], score: 0 });
+    if (avatar){
+      const uploadResponse = await storage.cloudinary.uploader.upload(avatar, {upload_preset: 'triviahack_setup'});
+      await User.create({ username, email, password: passwordHash, avatar: uploadResponse.url, friends: [], score: 0 });
+    } else {
+      await User.create({ username, email, password: passwordHash, avatar, friends: [], score: 0 });
+    }
 
     return res.json({ message: "Successfully signed up!" });
   } catch (error) {
