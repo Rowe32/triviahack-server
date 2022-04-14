@@ -54,7 +54,8 @@ router.post("/signup", async (req, res) => {
       const uploadResponse = await storage.cloudinary.uploader.upload(avatar, {upload_preset: 'triviahack_setup'});
       await User.create({ username, email, password: passwordHash, avatar: uploadResponse.url, friends: [], score: 0 });
     } else {
-      await User.create({ username, email, password: passwordHash, avatar, friends: [], score: 0 });
+      const default_avatar = "https://res.cloudinary.com/triviahack/image/upload/v1649941924/users-avatars/logo2_nh2ym0.png";
+      await User.create({ username, email, password: passwordHash, avatar: default_avatar, friends: [], score: 0 });
     }
 
     return res.json({ message: "Successfully signed up!" });
