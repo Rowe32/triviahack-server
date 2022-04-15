@@ -26,7 +26,7 @@ function createNewGame(idData) {
         this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
     
         this.join(thisGameId);
-        usersRoom[thisGameId] = [{username: idData.username, score: 0}];
+        usersRoom[thisGameId] = [{username: idData.username, score: 0, avatar: idData.avatar}];
     
         io.sockets.in(thisGameId).emit('playerJoinedRoom', { usersRoom: usersRoom[thisGameId], gameId: thisGameId});   
     } catch (error) {
@@ -37,6 +37,7 @@ function createNewGame(idData) {
 function playerJoinsGame(idData) {
     try {
         idData.mySocketId = this.id;
+        //Check if Room exists
         if (!(idData.gameId in usersRoom)) {
             this.emit('error', {errorMessage: "Room not found!"});
             return;
@@ -44,11 +45,13 @@ function playerJoinsGame(idData) {
     
         this.join(idData.gameId);
     
-        usersRoom[idData.gameId].push({username: idData.username, score: 0});
+        //Updating player array
+        usersRoom[idData.gameId].push({username: idData.username, score: 0, avatar: idData.avatar});
         idData.usersRoom = usersRoom[idData.gameId];
     
         this.emit('mySocketId', {mySocketId: idData.mySocketId});
-    
+        
+        //Sending the players array to everyone
         io.sockets.in(idData.gameId).emit('playerJoinedRoom', idData);        
     } catch (error) {
         this.emit('error', {errorMessage: "Sorry, something went wrong!"});
